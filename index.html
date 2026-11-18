@@ -275,9 +275,9 @@
   .minimap button.is-done{border-color:#f0b23e;background:#fdf3d3;color:var(--navy)}
   .minimap button.is-done.cur{background:var(--navy);color:#fff;border-color:var(--navy)}
   .minimap button .mm-check{font-size:9px}
-  .d-body{width:100%;max-width:640px;margin:0 auto;padding:2px 18px 30px}
+  .d-body{width:100%;max-width:640px;margin:0 auto;padding:14px 18px 30px}
   .panel h2{font-size:clamp(25px,7vw,34px);font-weight:900;line-height:1.35;margin:2px 0 10px}
-  .p-kicker{font-size:12px;font-weight:900;letter-spacing:.1em;color:#b96a12;margin:12px 0 0}
+  .p-kicker{font-size:12px;font-weight:900;letter-spacing:.1em;color:#b96a12;margin:20px 0 0}
   .panel h3{
     font-size:19px;font-weight:900;line-height:1.45;margin:34px 0 8px;
     padding-left:12px;border-left:5px solid #f59b2e;
@@ -479,7 +479,6 @@
   <div class="wrap">
     <div class="back-row">
       <button class="back-btn" data-nav="home">‹ 全体マップ</button>
-      <span class="where-txt" id="step-where"></span>
     </div>
     <div id="step-body"></div>
   </div>
@@ -490,7 +489,6 @@
   <div class="wrap">
     <div class="back-row">
       <button class="back-btn" id="btn-ksf-back">‹ Stepマップ</button>
-      <span class="where-txt" id="ksf-where"></span>
     </div>
     <div id="ksf-head"></div>
     <div class="map-canvas" id="ksf-canvas"></div>
@@ -504,7 +502,6 @@
     <div class="sub-head-in">
       <div class="back-row">
         <button class="back-btn" id="btn-detail-back">‹ 教材マップに戻る</button>
-        <span class="where-txt">全体の現在地：<b id="where-label">—</b></span>
       </div>
       <nav class="minimap" id="minimap" aria-label="全体マップのミニ版"></nav>
     </div>
@@ -524,7 +521,6 @@
     <div class="sub-head-in">
       <div class="back-row">
         <button class="back-btn" id="btn-quiz-back">‹ 教材マップに戻る</button>
-        <span class="where-txt" id="quiz-where"></span>
       </div>
       <div class="q-progress" aria-live="polite">
         <div class="bar"><i id="q-prog-bar"></i></div>
@@ -1690,7 +1686,6 @@ function soonBox(no,name){
   return '<div class="ksf-box ksf-box--soon"><div class="k-no">'+no+'</div><div class="k-name">'+name+'</div><div class="k-prog">準備中</div></div>';
 }
 function renderStep(sid){
-  document.getElementById('step-where').innerHTML='全体マップ › <b>'+STEPS[sid].label+'</b>';
   var leadTail='。KSFをタップすると、教材マップを読めます。';
   var h='<span class="step-label">'+STEPS[sid].label+'</span><h1 class="page-title">'+esc(STEPS[sid].name)+'</h1><p class="page-lead">'+esc(STEPS[sid].one)+leadTail+'</p>';
   if(sid==='step1'){
@@ -1735,10 +1730,9 @@ function blockBtn(ksfId,id,half){
 }
 function renderKsf(ksfId){
   var k=KSFS[ksfId];
-  document.getElementById('ksf-where').innerHTML='全体マップ › '+k.stepLabel+' › <b>'+esc(k.name)+'</b>';
   document.getElementById('btn-ksf-back').textContent='‹ '+k.stepLabel+'マップ';
   var total=blockCount(ksfId).length,n=doneCount(ksfId),all=ksfComplete(ksfId);
-  var head='<span class="step-label">'+k.stepLabel+' ｜ '+esc(k.ksfLabel)+'</span>'
+  var head='<span class="step-label">KSF</span>'
     +'<h1 class="page-title">'+k.nameHtml+'</h1>'
     +'<p class="page-lead">ブロックをタップすると、内容を読めます。</p>'
     +'<div class="map-progress"><div class="bar"><i style="width:'+(n/total*100)+'%"></i></div><div class="txt"><b>'+n+'</b> / '+total+' ブロック読了</div></div>'
@@ -1781,7 +1775,6 @@ function showBlock(id){
   curBlock=id;
   var b=k.blocks[id];
   panel.innerHTML='<p class="p-kicker">'+esc(b.kicker)+'</p><h2>'+b.panelTitle+'</h2>'+renderItems(b.items);
-  document.getElementById('where-label').textContent=b.mm;
   var d=!!ksfDone(curKsf)[id];
   doneBtn.textContent=d?'読了済み（マップに戻る）':'読み終えた ✓ マップに戻る';
   doneBtn.classList.toggle('already',d);
@@ -1825,7 +1818,6 @@ function renderQuestion(){
   qAnswered=false;
   qMain.style.display='';qResult.classList.remove('show');
   qRetryBtn.classList.remove('show');qNextBtn.classList.remove('show');
-  document.getElementById('quiz-where').innerHTML=KSFS[curKsf].stepLabel+' '+esc(KSFS[curKsf].ksfLabel)+' ｜ <b>確認テスト</b>';
   qKicker.textContent='確認テスト ｜ 第'+(qIndex+1)+'問';
   qQuestion.textContent=q.q;
   qProgTxt.textContent='第'+(qIndex+1)+'問 ／ 全'+quiz.length+'問';
