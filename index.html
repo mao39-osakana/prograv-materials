@@ -166,9 +166,50 @@
 
   /* ============ KSF MAP blocks ============ */
   .map-canvas{display:flex;flex-direction:column;padding:6px 0 2px}
-  .map-canvas > .block,.map-canvas > .connector,.map-canvas > .connector-row{flex:0 0 auto}
+  .map-canvas > .block,.map-canvas > .connector,.map-canvas > .connector-row,.map-canvas > .branch-row{flex:0 0 auto}
   .block{height:auto;overflow:visible}
   .connector-row{display:flex;align-items:stretch;gap:8px}
+  /* ---- Column branch: dashed horizontal twig + thin vertical tab ---- */
+  .branch-row{display:flex;align-items:stretch;gap:0;min-width:0}
+  .branch-row > .block{flex:1 1 auto;width:auto;min-width:0}
+  .branch-line{
+    flex:0 0 16px;align-self:center;height:0;
+    border-top:2px dashed #d9a441;
+  }
+  .column-tab{
+    flex:0 0 36px;align-self:stretch;
+    writing-mode:vertical-rl;text-orientation:upright;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    background:#fffaf1;border:1.5px solid #f0cf8e;border-radius:10px;
+    color:#8a5a10;font-size:13px;font-weight:900;letter-spacing:.14em;
+    padding:12px 0;line-height:1;
+    transition:transform .15s ease;
+  }
+  .column-tab:active{transform:scale(.97)}
+  .column-tab .ct-count{
+    font-size:11px;font-weight:700;color:var(--sub);letter-spacing:.08em;
+    display:inline-flex;align-items:center;
+  }
+  .column-tab .tcy{text-combine-upright:all;letter-spacing:0;font-weight:900;color:#8a5a10}
+  /* ---- Column list ---- */
+  .col-list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+  .col-item{
+    position:relative;text-align:left;width:100%;
+    border-radius:var(--radius);padding:13px 15px 14px;
+    background:#fffaf1;border:1.5px solid #f0cf8e;color:var(--ink);
+    box-shadow:var(--shadow);transition:transform .15s ease;
+  }
+  .col-item:active{transform:scale(.985)}
+  .col-item .c-kicker{font-size:11px;font-weight:900;letter-spacing:.1em;color:#b96a12}
+  .col-item .c-title{font-size:18px;font-weight:900;line-height:1.4;margin:1px 0 2px;padding-right:52px}
+  .col-item .c-tap{
+    position:absolute;top:13px;right:15px;font-size:11px;font-weight:700;color:#b96a12;
+    display:flex;align-items:center;gap:2px;
+  }
+  .col-back-map{
+    flex:1 1 auto;min-width:0;background:var(--tint2);color:var(--navy);border:none;
+    border-radius:999px;font-size:15px;font-weight:900;padding:10px 16px;white-space:nowrap;
+  }
   .block{
     position:relative;text-align:left;width:100%;
     border-radius:var(--radius);padding:13px 15px 14px;
@@ -434,6 +475,9 @@
     .block--half .b-one{font-size:11.5px;line-height:1.45}
     .vs{font-size:10px;padding:2px 6px}
     .connector-row{gap:6px}
+    .branch-line{flex-basis:10px}
+    .column-tab{flex-basis:32px;font-size:12px;padding:10px 0}
+    .col-item .c-title{font-size:16.5px}
     .step-box{padding:11px 13px 12px}
     .step-box .s-title{font-size:18px}
     .ksf-box .k-name{font-size:14px}
@@ -510,6 +554,35 @@
     <div class="sticky-foot-in">
       <button class="foot-back" id="btn-detail-back2">‹ マップ</button>
       <button class="foot-done" id="btn-done">読み終えた ✓ マップに戻る</button>
+    </div>
+  </footer>
+</div>
+
+<!-- ============ COLUMN LIST ============ -->
+<main class="view" id="view-collist" aria-label="コラム一覧">
+  <div class="wrap">
+    <div class="back-row">
+      <button class="back-btn" id="btn-collist-back">‹ 教材マップに戻る</button>
+    </div>
+    <div id="collist-head"></div>
+    <div class="col-list" id="collist-list"></div>
+  </div>
+</main>
+
+<!-- ============ COLUMN DETAIL ============ -->
+<div class="view zoom" id="view-coldetail" role="dialog" aria-label="コラムの内容">
+  <header class="sub-head">
+    <div class="sub-head-in">
+      <div class="back-row">
+        <button class="back-btn" id="btn-coldetail-back">‹ コラム一覧に戻る</button>
+      </div>
+    </div>
+  </header>
+  <div class="d-body"><section class="panel" id="col-panel"></section></div>
+  <footer class="sticky-foot">
+    <div class="sticky-foot-in">
+      <button class="foot-back" id="btn-coldetail-back2">‹ 一覧</button>
+      <button class="col-back-map" id="btn-coldetail-map">教材マップに戻る</button>
     </div>
   </footer>
 </div>
@@ -784,6 +857,7 @@ KSFS['s2-disclosure']={
   nameHtml:'自己開示 <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「自己開示」｜ GRAV SCORE の B軸（自己開示）と対応するKSFです',
   layout:['why','mindset','steps','notyet','mistakes','check'],
+  columns:[{id:'weakness-first',attachTo:'notyet',title:'弱みは、最初に言っておく',items:['笑顔が苦手、緊張しやすい、口数が少ないなど、コミュニケーション上の弱みは、デートの早い段階で自分から言っておきます。','言わないでいると、相手は「つまらなそうにしている」「怒っているのかな」と誤解します。先に言っておけば、相手はその前提で見てくれますし、弱みを隠さないこと自体が、正直さとして伝わります。','言い方は、重い告白にしません。「笑うのがちょっと苦手で、無愛想に見えたらごめんなさい」くらいの軽さで、一言だけ置きます。','ここで言う弱みは、その場の振る舞いに表れるものだけです。過去の恋愛の詳細や本人の弱さの告白など、深い層の開示は、初回〜2回目では扱いません。']}],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'開示は、量ではなく釣り合い',one:'「心を開いているか」と「開き方が釣り合っているか」が見られている',mm:'このKSFの役割',
       panelTitle:'自己開示は、情報の量の話ではない',items:[
@@ -818,7 +892,6 @@ KSFS['s2-disclosure']={
       {t:'h3',x:'話す長さと戻し方'},
       {t:'list',items:['1回に話す長さは30秒〜1分を目安に区切る。それ以上続くときは独演会になりやすい','自分の話の最後は、相手への問いかけで戻す。開示と問いかけはセットで回す','相手の反応が薄い話題は、その場で切り上げる。反応の良い話題だけ深める']},
       {t:'phrase',label:'戻し方の例',x:'「自分はこんな感じです。〇〇さんはどうですか？」'},
-      {t:'column',title:'弱みは、最初に言っておく',items:['笑顔が苦手、緊張しやすい、口数が少ないなど、コミュニケーション上の弱みは、デートの早い段階で自分から言っておきます。','言わないでいると、相手は「つまらなそうにしている」「怒っているのかな」と誤解します。先に言っておけば、相手はその前提で見てくれますし、弱みを隠さないこと自体が、正直さとして伝わります。','言い方は、重い告白にしません。「笑うのがちょっと苦手で、無愛想に見えたらごめんなさい」くらいの軽さで、一言だけ置きます。','ここで言う弱みは、その場の振る舞いに表れるものだけです。過去の恋愛の詳細や本人の弱さの告白など、深い層の開示は、初回〜2回目では扱いません。']}
     ]},
     notyet:{kind:'warn',kicker:'注意ポイント',title:'初回〜2回目で置かない開示',one:'過去の恋愛の詳細・収入・借金・家族の問題・愚痴',mm:'置かない開示',
       panelTitle:'初回〜2回目では、まだ置かない',items:[
@@ -939,6 +1012,7 @@ KSFS['s2-listening']={
   nameHtml:'傾聴・共感 <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「傾聴・共感」｜ GRAV SCORE の A軸（傾聴・共感）と対応するKSFです',
   layout:['why','mindset','steps','warn','mistakes','check'],
+  columns:[{id:'gaze-finish',attachTo:'warn',title:'話し終わったかどうかは、視線で分かる',items:['相手が上を見て考えているそぶりのときは、まだ言葉を探して、話そうとしている最中です。ここで被せたり、次の質問を重ねたりせず、待ちます。','一方、正面を向いているときは、話し終わっている可能性が高い。そこから受け止めや次の問いかけに入ります。','「相槌と間の使い方」で扱った沈黙の見分け方です。沈黙が「考え中」なのか「話し終わり」なのかを、視線で読みます。']}],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'人は「どう扱われたか」を覚えている',one:'話の内容より、受け止め方で次の話が決まる',mm:'このKSFの役割',
       panelTitle:'受け止め方で、<br>次の話が決まる',items:[
@@ -962,7 +1036,6 @@ KSFS['s2-listening']={
       {t:'phrase',label:'気持ちを返す例',x:'「それは嬉しいですね」「それは大変でしたね」'},
       {t:'h3',x:'相槌と間の使い方'},
       {t:'list',items:['うなずきと短い相槌（「うんうん」「なるほど」）は、相手の文の切れ目で入れる。話の途中で被せない','相手が言葉を探している沈黙は、考える時間として待つ。沈黙を埋めようと質問を重ねると、相手は急かされたと感じる','視線は相手に向け、スマホや周囲に逸らさない。聞く姿勢そのものが受け止めの一部']},
-      {t:'column',title:'話し終わったかどうかは、視線で分かる',items:['相手が上を見て考えているそぶりのときは、まだ言葉を探して、話そうとしている最中です。ここで被せたり、次の質問を重ねたりせず、待ちます。','一方、正面を向いているときは、話し終わっている可能性が高い。そこから受け止めや次の問いかけに入ります。','「相槌と間の使い方」で扱った沈黙の見分け方です。沈黙が「考え中」なのか「話し終わり」なのかを、視線で読みます。']}
     ]},
     warn:{kind:'warn',kicker:'注意ポイント',title:'聞く妨げになる反応を止める',one:'即アドバイス・話の横取り・評価・否定から入る',mm:'妨げになる反応',
       panelTitle:'聞く妨げになる反応は、4つ',items:[
@@ -1533,9 +1606,18 @@ function doneCount(ksfId){var d=ksfDone(ksfId);return blockCount(ksfId).filter(f
 function ksfComplete(ksfId){return doneCount(ksfId)===blockCount(ksfId).length;}
 
 /* ================= NAVIGATION ================= */
-var views={home:document.getElementById('view-home'),step:document.getElementById('view-step'),ksf:document.getElementById('view-ksf'),detail:document.getElementById('view-detail'),quiz:document.getElementById('view-quiz')};
+var views={home:document.getElementById('view-home'),step:document.getElementById('view-step'),ksf:document.getElementById('view-ksf'),detail:document.getElementById('view-detail'),quiz:document.getElementById('view-quiz'),collist:document.getElementById('view-collist'),coldetail:document.getElementById('view-coldetail')};
 var crumb=document.getElementById('g-crumb');
-var curStep=null,curKsf=null,curBlock=null;
+var curStep=null,curKsf=null,curBlock=null,curCol=null;
+function findColumn(ksfId,colId){
+  var k=KSFS[ksfId];if(!k||!k.columns)return null;
+  for(var i=0;i<k.columns.length;i++){if(k.columns[i].id===colId)return k.columns[i];}
+  return null;
+}
+function columnsForBlock(ksfId,blockId){
+  var k=KSFS[ksfId];if(!k||!k.columns)return [];
+  return k.columns.filter(function(c){return c.attachTo===blockId;});
+}
 function show(name){
   Object.keys(views).forEach(function(k){views[k].classList.toggle('open',k===name);});
   window.scrollTo(0,0);
@@ -1548,17 +1630,21 @@ function cleanState(s){
   if(s.view==='ksf'&&KSFS[s.ksfId])return {view:'ksf',ksfId:s.ksfId};
   if(s.view==='detail'&&KSFS[s.ksfId]&&KSFS[s.ksfId].blocks[s.blockId])return {view:'detail',ksfId:s.ksfId,blockId:s.blockId};
   if(s.view==='quiz'&&KSFS[s.ksfId])return {view:'quiz',ksfId:s.ksfId};
+  if(s.view==='collist'&&KSFS[s.ksfId]&&KSFS[s.ksfId].columns&&KSFS[s.ksfId].columns.length)return {view:'collist',ksfId:s.ksfId};
+  if(s.view==='coldetail'&&findColumn(s.ksfId,s.colId))return {view:'coldetail',ksfId:s.ksfId,colId:s.colId};
   if(s.view==='home')return {view:'home'};
   return {view:'home'};
 }
 function sameState(a,b){
-  return !!a&&!!b&&a.view===b.view&&a.stepId===b.stepId&&a.ksfId===b.ksfId&&a.blockId===b.blockId;
+  return !!a&&!!b&&a.view===b.view&&a.stepId===b.stepId&&a.ksfId===b.ksfId&&a.blockId===b.blockId&&a.colId===b.colId;
 }
 function hashForState(s){
   if(s.view==='step')return '#/step/'+s.stepId;
   if(s.view==='ksf')return '#/ksf/'+s.ksfId;
   if(s.view==='detail')return '#/ksf/'+s.ksfId+'/block/'+s.blockId;
   if(s.view==='quiz')return '#/ksf/'+s.ksfId+'/quiz';
+  if(s.view==='collist')return '#/ksf/'+s.ksfId+'/columns';
+  if(s.view==='coldetail')return '#/ksf/'+s.ksfId+'/column/'+s.colId;
   return '#/';
 }
 function stateFromHash(){
@@ -1568,18 +1654,22 @@ function stateFromHash(){
     if(parts[0]==='step'&&parts[1])return cleanState({view:'step',stepId:decodeURIComponent(parts[1])});
     if(parts[0]==='ksf'&&parts[1]&&parts[2]==='block'&&parts[3])return cleanState({view:'detail',ksfId:decodeURIComponent(parts[1]),blockId:decodeURIComponent(parts[3])});
     if(parts[0]==='ksf'&&parts[1]&&parts[2]==='quiz')return cleanState({view:'quiz',ksfId:decodeURIComponent(parts[1])});
+    if(parts[0]==='ksf'&&parts[1]&&parts[2]==='columns')return cleanState({view:'collist',ksfId:decodeURIComponent(parts[1])});
+    if(parts[0]==='ksf'&&parts[1]&&parts[2]==='column'&&parts[3])return cleanState({view:'coldetail',ksfId:decodeURIComponent(parts[1]),colId:decodeURIComponent(parts[3])});
     if(parts[0]==='ksf'&&parts[1])return cleanState({view:'ksf',ksfId:decodeURIComponent(parts[1])});
   }catch(e){}
   return null;
 }
-function withIdx(s,idx){var o={view:s.view,stepId:s.stepId,ksfId:s.ksfId,blockId:s.blockId,_idx:idx};return o;}
+function withIdx(s,idx){var o={view:s.view,stepId:s.stepId,ksfId:s.ksfId,blockId:s.blockId,colId:s.colId,_idx:idx};return o;}
 function applyState(raw){
   var s=cleanState(raw);curNav=s;
-  if(s.view==='home'){curStep=null;curKsf=null;curBlock=null;renderHome();crumb.textContent='全体マップ';show('home');return;}
-  if(s.view==='step'){curStep=s.stepId;curKsf=null;curBlock=null;renderStep(s.stepId);crumb.textContent=STEPS[s.stepId].label+'｜'+STEPS[s.stepId].name;show('step');return;}
-  if(s.view==='ksf'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;renderKsf(s.ksfId);var kk=KSFS[s.ksfId];crumb.textContent=kk.stepLabel+'｜'+kk.name;show('ksf');return;}
-  if(s.view==='detail'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;showBlock(s.blockId);return;}
-  if(s.view==='quiz'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;showQuiz();return;}
+  if(s.view==='home'){curStep=null;curKsf=null;curBlock=null;curCol=null;renderHome();crumb.textContent='全体マップ';show('home');return;}
+  if(s.view==='step'){curStep=s.stepId;curKsf=null;curBlock=null;curCol=null;renderStep(s.stepId);crumb.textContent=STEPS[s.stepId].label+'｜'+STEPS[s.stepId].name;show('step');return;}
+  if(s.view==='ksf'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;curCol=null;renderKsf(s.ksfId);var kk=KSFS[s.ksfId];crumb.textContent=kk.stepLabel+'｜'+kk.name;show('ksf');return;}
+  if(s.view==='detail'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curCol=null;showBlock(s.blockId);return;}
+  if(s.view==='quiz'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;curCol=null;showQuiz();return;}
+  if(s.view==='collist'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;curCol=null;renderColList(s.ksfId);crumb.textContent=KSFS[s.ksfId].stepLabel+'｜'+KSFS[s.ksfId].name+'｜コラム';show('collist');return;}
+  if(s.view==='coldetail'){curKsf=s.ksfId;curStep=KSFS[s.ksfId].stepId;curBlock=null;showColumn(s.colId);return;}
 }
 function navigateTo(raw){
   var s=cleanState(raw);
@@ -1625,6 +1715,9 @@ window.addEventListener('popstate',function(e){
 function goHome(){navigateTo({view:'home'});}
 function goStep(stepId){navigateTo({view:'step',stepId:stepId});}
 function goKsf(ksfId){navigateTo({view:'ksf',ksfId:ksfId});}
+function goColList(ksfId){navigateTo({view:'collist',ksfId:ksfId});}
+function goColDetail(ksfId,colId){navigateTo({view:'coldetail',ksfId:ksfId,colId:colId});}
+function backToColList(ksfId){goBackTo({view:'collist',ksfId:ksfId});}
 function backToHome(){goBackTo({view:'home'});}
 function backToStep(stepId){goBackTo({view:'step',stepId:stepId});}
 function backToKsfView(ksfId){goBackTo({view:'ksf',ksfId:ksfId});}
@@ -1743,7 +1836,16 @@ function renderKsf(ksfId){
     if(Array.isArray(item)){
       h+='<div class="connector-row">'+blockBtn(ksfId,item[0],true)+'<span class="vs" aria-hidden="true">＋</span>'+blockBtn(ksfId,item[1],true)+'</div>';
     }else{
-      h+=blockBtn(ksfId,item,false);
+      var cols=columnsForBlock(ksfId,item);
+      if(cols.length){
+        var cnt=cols.length;
+        h+='<div class="branch-row">'+blockBtn(ksfId,item,false)
+          +'<span class="branch-line" aria-hidden="true"></span>'
+          +'<button class="column-tab" data-collist="'+ksfId+'" aria-label="コラム一覧を開く（'+cnt+'件）"><span class="ct-label">コラム</span><span class="ct-count"><span class="tcy">'+cnt+'</span>件</span></button>'
+          +'</div>';
+      }else{
+        h+=blockBtn(ksfId,item,false);
+      }
     }
   });
   document.getElementById('ksf-canvas').innerHTML=h;
@@ -1756,6 +1858,9 @@ function renderKsf(ksfId){
   document.getElementById('ksf-tail').innerHTML=tail;
   document.querySelectorAll('#ksf-canvas [data-block]').forEach(function(b){
     b.addEventListener('click',function(){openBlock(b.getAttribute('data-block'));});
+  });
+  document.querySelectorAll('#ksf-canvas [data-collist]').forEach(function(b){
+    b.addEventListener('click',function(){goColList(b.getAttribute('data-collist'));});
   });
   var sq=document.getElementById('btn-start-quiz');
   if(sq)sq.addEventListener('click',startQuiz);
@@ -1803,6 +1908,36 @@ function backToKsf(markDone){
 document.getElementById('btn-detail-back').addEventListener('click',function(){backToKsf(false);});
 document.getElementById('btn-detail-back2').addEventListener('click',function(){backToKsf(false);});
 doneBtn.addEventListener('click',function(){backToKsf(true);});
+
+/* ================= COLUMNS ================= */
+function renderColList(ksfId){
+  var k=KSFS[ksfId];if(!k||!k.columns)return;
+  document.getElementById('collist-head').innerHTML='<span class="step-label">KSF</span>'
+    +'<h1 class="page-title">コラム <span class="thin">（'+esc(k.name)+'）</span></h1>'
+    +'<p class="page-lead">読みたいコラムをタップしてください。</p>';
+  var h='';
+  k.columns.forEach(function(c){
+    h+='<button class="col-item" data-col="'+esc(c.id)+'" aria-label="コラム「'+esc(c.title)+'」を開く"><span class="c-tap">読む ›</span><div class="c-kicker">コラム</div><div class="c-title">'+esc(c.title)+'</div></button>';
+  });
+  document.getElementById('collist-list').innerHTML=h;
+  document.querySelectorAll('#collist-list [data-col]').forEach(function(b){
+    b.addEventListener('click',function(){goColDetail(ksfId,b.getAttribute('data-col'));});
+  });
+}
+function showColumn(colId){
+  var k=KSFS[curKsf];if(!k)return;
+  var c=findColumn(curKsf,colId);if(!c)return;
+  curCol=colId;
+  var h='<p class="p-kicker">コラム</p><h2>'+esc(c.title)+'</h2>';
+  c.items.forEach(function(par){h+='<p>'+par+'</p>';});
+  document.getElementById('col-panel').innerHTML=h;
+  crumb.textContent=k.stepLabel+'｜'+k.name+'｜コラム';
+  show('coldetail');
+}
+document.getElementById('btn-collist-back').addEventListener('click',function(){if(curKsf)backToKsfView(curKsf);else backToHome();});
+document.getElementById('btn-coldetail-back').addEventListener('click',function(){if(curKsf)backToColList(curKsf);else backToHome();});
+document.getElementById('btn-coldetail-back2').addEventListener('click',function(){if(curKsf)backToColList(curKsf);else backToHome();});
+document.getElementById('btn-coldetail-map').addEventListener('click',function(){if(curKsf)backToKsfView(curKsf);else backToHome();});
 
 /* ================= QUIZ ================= */
 var qIndex=0,qCorrect=0,qAnswered=false;
