@@ -172,12 +172,13 @@
   /* ---- Column branch: dashed horizontal twig + thin vertical tab ---- */
   .branch-row{display:flex;align-items:stretch;gap:0;min-width:0}
   .branch-row > .block{flex:1 1 auto;width:auto;min-width:0}
+  .branch-row > .connector-row{flex:1 1 auto;min-width:0}
   .branch-line{
     flex:0 0 16px;align-self:center;height:0;
     border-top:2px dashed #d9a441;
   }
   .column-tab{
-    flex:0 0 36px;align-self:stretch;
+    flex:0 0 50px;align-self:stretch;
     writing-mode:vertical-rl;text-orientation:upright;
     display:flex;align-items:center;justify-content:center;gap:10px;
     background:#fffaf1;border:1.5px solid #f0cf8e;border-radius:10px;
@@ -210,6 +211,12 @@
     flex:1 1 auto;min-width:0;background:var(--tint2);color:var(--navy);border:none;
     border-radius:999px;font-size:15px;font-weight:900;padding:10px 16px;white-space:nowrap;
   }
+  .col-empty{
+    border:1.5px dashed #f0cf8e;border-radius:var(--radius);background:#fffaf1;
+    padding:22px 18px;text-align:center;
+  }
+  .col-empty .ce-title{font-size:16px;font-weight:900;margin:0 0 4px;color:var(--navy)}
+  .col-empty .ce-note{font-size:13px;color:var(--sub);margin:0;line-height:1.6}
   .block{
     position:relative;text-align:left;width:100%;
     border-radius:var(--radius);padding:13px 15px 14px;
@@ -476,7 +483,7 @@
     .vs{font-size:10px;padding:2px 6px}
     .connector-row{gap:6px}
     .branch-line{flex-basis:10px}
-    .column-tab{flex-basis:32px;font-size:12px;padding:10px 0}
+    .column-tab{flex-basis:44px;font-size:12px;padding:10px 0}
     .col-item .c-title{font-size:16.5px}
     .step-box{padding:11px 13px 12px}
     .step-box .s-title{font-size:18px}
@@ -662,6 +669,8 @@ KSFS['s3-values']={
   nameHtml:'相手の価値観の<br>理解／尊重 <span class="thin">（関係構築フェーズ）</span>',
   foot:'Step3 KSF1「相手の価値観の理解／尊重」｜ GRAV SCORE の E軸（価値観のすり合わせ）と地続きのKSFです',
   layout:['why','mindset','steps',['notyet','mistakes'],'check'],
+  colAnchor:'notyet',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'役割は、違いをすり合わせること',one:'3回目以降は「違いをすり合わせる」段階だから',mm:'このKSFの役割',
       panelTitle:'3回目以降は、<br>「違いをすり合わせる」段階',items:[
@@ -784,6 +793,8 @@ KSFS['s2-first']={
   nameHtml:'第一印象 <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「第一印象」｜ GRAV SCORE の確認問い「自分に合うスタイリングができているか」の、当日の振る舞い編です',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'第一印象は、最初の数分で決まる',one:'話の内容ではなく、「一緒にいて心地いいか」で感じ取られる',mm:'このKSFの役割',
       panelTitle:'デートの第一印象は、<br>話の内容では決まらない',items:[
@@ -857,6 +868,7 @@ KSFS['s2-disclosure']={
   nameHtml:'自己開示 <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「自己開示」｜ GRAV SCORE の B軸（自己開示）と対応するKSFです',
   layout:['why','mindset','steps','notyet','mistakes','check'],
+  colAnchor:'notyet',
   columns:[{id:'weakness-first',attachTo:'notyet',title:'弱みは、最初に言っておく',items:['笑顔が苦手、緊張しやすい、口数が少ないなど、コミュニケーション上の弱みは、デートの早い段階で自分から言っておきます。','言わないでいると、相手は「つまらなそうにしている」「怒っているのかな」と誤解します。先に言っておけば、相手はその前提で見てくれますし、弱みを隠さないこと自体が、正直さとして伝わります。','言い方は、重い告白にしません。「笑うのがちょっと苦手で、無愛想に見えたらごめんなさい」くらいの軽さで、一言だけ置きます。','ここで言う弱みは、その場の振る舞いに表れるものだけです。過去の恋愛の詳細や本人の弱さの告白など、深い層の開示は、初回〜2回目では扱いません。']}],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'開示は、量ではなく釣り合い',one:'「心を開いているか」と「開き方が釣り合っているか」が見られている',mm:'このKSFの役割',
@@ -934,6 +946,8 @@ KSFS['s2-questioning']={
   nameHtml:'問いかけ <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「問いかけ」｜ GRAV SCORE の C軸（問いかけ）と対応するKSFです',
   layout:['why','mindset','steps','pickup','warn','check'],
+  colAnchor:'warn',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'興味は、言葉にして届ける',one:'役割は情報集めではなく、「興味があります」を実感してもらうこと',mm:'このKSFの役割',
       panelTitle:'問いかけの役割は、<br>情報を集めることではない',items:[
@@ -1012,6 +1026,7 @@ KSFS['s2-listening']={
   nameHtml:'傾聴・共感 <span class="thin">（初期デートフェーズ）</span>',
   foot:'Step2「傾聴・共感」｜ GRAV SCORE の A軸（傾聴・共感）と対応するKSFです',
   layout:['why','mindset','steps','warn','mistakes','check'],
+  colAnchor:'warn',
   columns:[{id:'gaze-finish',attachTo:'warn',title:'話し終わったかどうかは、視線で分かる',items:['相手が上を見て考えているそぶりのときは、まだ言葉を探して、話そうとしている最中です。ここで被せたり、次の質問を重ねたりせず、待ちます。','一方、正面を向いているときは、話し終わっている可能性が高い。そこから受け止めや次の問いかけに入ります。','「相槌と間の使い方」で扱った沈黙の見分け方です。沈黙が「考え中」なのか「話し終わり」なのかを、視線で読みます。']}],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'人は「どう扱われたか」を覚えている',one:'話の内容より、受け止め方で次の話が決まる',mm:'このKSFの役割',
@@ -1083,6 +1098,8 @@ KSFS['s3-execution']={
   nameHtml:'実行 <span class="thin">（関係構築フェーズ）</span>',
   foot:'Step3 KSF2「実行」｜ KSF1（理解／尊重）で聞いたことを、行動に移すKSFです',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'聞いたことが、行動に表れて初めて伝わる',one:'言葉より行動。聞いたことを小さな行動に移す積み重ねが、好意の確保につながる',mm:'このKSFの役割',
       panelTitle:'聞けても、それで終わると<br>関係は進まない',items:[
@@ -1151,6 +1168,8 @@ KSFS['s3-disclosure']={
   nameHtml:'自己の価値観の開示 <span class="thin">（関係構築フェーズ）</span>',
   foot:'Step3 KSF3「自己の価値観の開示」｜ GRAV SCORE の E軸（価値観のすり合わせ）と地続きのKSFです',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'すり合わせは、両方向で初めて成立する',one:'自分の価値観が相手に渡って初めて、2人の間で調整が始まる',mm:'このKSFの役割',
       panelTitle:'聞いて、合わせるだけでは<br>関係は深まらない',items:[
@@ -1223,6 +1242,8 @@ KSFS['s1-contacts']={
   nameHtml:'接点数 <span class="thin">（出会いフェーズ）</span>',
   foot:'Step1「接点数」｜ 量の確保（接点数×活動量）の片側で、確認問い「自分に合う環境を選べているか」と地続きのKSFです',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'出会いは、合う環境でしか生まれない',one:'母数と層が合っていない環境では、どんなに写真が良くても生まれない',mm:'このKSFの役割',
       panelTitle:'最初の判断は、<br>「どの場が自分に合うか」',items:[
@@ -1303,6 +1324,8 @@ KSFS['s1-activity']={
   nameHtml:'活動量 <span class="thin">（出会いフェーズ）</span>',
   foot:'Step1「活動量」｜ 量の確保（接点数×活動量）の片側で、確認問い「アプローチを取れているか」と地続きのKSFです（アプリの場合）',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'量は「接点数 × 活動量」で決まる',one:'登録して眺めているだけでは、相手の画面に現れない',mm:'このKSFの役割',
       panelTitle:'出会いの量は、<br>「接点数 × 活動量」で決まる',items:[
@@ -1366,6 +1389,8 @@ KSFS['s1-photo']={
   nameHtml:'写真 <span class="thin">（出会いフェーズ）</span>',
   foot:'Step1「写真」｜ 質の確保（写真／第一印象×プロフィール）の片側で、確認問い「自分に合うスタイリングができているか」の写真編です',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'判断は、写真で終わる',one:'プロフィール文を読む前に、写真で判断が終わる',mm:'このKSFの役割',
       panelTitle:'写真は、会ったときの第一印象を<br>先に届けるもの',items:[
@@ -1428,6 +1453,8 @@ KSFS['s1-subphoto']={
   nameHtml:'サブ写真 <span class="thin">（出会いフェーズ｜写真の続き）</span>',
   foot:'Step1「サブ写真」｜ 「写真」の続きのテーマで、2枚目以降の選び方を扱います',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'サブ写真で「一緒にいる場面」を想像させる',one:'「かっこよさ」の追加ではなく、会う・会わないの判断材料',mm:'このKSFの役割',
       panelTitle:'サブ写真の仕事は、<br>「かっこよさ」の追加ではない',items:[
@@ -1490,6 +1517,8 @@ KSFS['s1-profile']={
   nameHtml:'プロフィール <span class="thin">（出会いフェーズ）</span>',
   foot:'Step1「プロフィール」｜ 質の確保（写真／第一印象×プロフィール）の片側で、確認問い「自分の魅力／好みを言語化できているか」と地続きのKSFです',
   layout:['why','mindset','steps','mistakes','check'],
+  colAnchor:'mistakes',
+  columns:[],
   blocks:{
     why:{kind:'why',kicker:'このKSFの役割',title:'役割は「自分の紹介」ではない',one:'相手に「話してみたい」と思わせ、質問を返せるきっかけを置く',mm:'このKSFの役割',
       panelTitle:'写真で足を止めた相手が、<br>次に見るのがプロフィール文',items:[
@@ -1630,7 +1659,7 @@ function cleanState(s){
   if(s.view==='ksf'&&KSFS[s.ksfId])return {view:'ksf',ksfId:s.ksfId};
   if(s.view==='detail'&&KSFS[s.ksfId]&&KSFS[s.ksfId].blocks[s.blockId])return {view:'detail',ksfId:s.ksfId,blockId:s.blockId};
   if(s.view==='quiz'&&KSFS[s.ksfId])return {view:'quiz',ksfId:s.ksfId};
-  if(s.view==='collist'&&KSFS[s.ksfId]&&KSFS[s.ksfId].columns&&KSFS[s.ksfId].columns.length)return {view:'collist',ksfId:s.ksfId};
+  if(s.view==='collist'&&KSFS[s.ksfId])return {view:'collist',ksfId:s.ksfId};
   if(s.view==='coldetail'&&findColumn(s.ksfId,s.colId))return {view:'coldetail',ksfId:s.ksfId,colId:s.colId};
   if(s.view==='home')return {view:'home'};
   return {view:'home'};
@@ -1831,21 +1860,24 @@ function renderKsf(ksfId){
     +'<div class="all-done'+(all?' show':'')+'"><p>マップを一周しました</p><p class="sub">おつかれさまでした。仕上げに、下の確認テストで理解を確かめましょう。</p></div>';
   document.getElementById('ksf-head').innerHTML=head;
   var h='';
+  var colTotal=(k.columns||[]).length;
   k.layout.forEach(function(item,i){
     if(i>0)h+=ARROW;
-    if(Array.isArray(item)){
-      h+='<div class="connector-row">'+blockBtn(ksfId,item[0],true)+'<span class="vs" aria-hidden="true">＋</span>'+blockBtn(ksfId,item[1],true)+'</div>';
+    var isPair=Array.isArray(item);
+    var rowHtml;
+    if(isPair){
+      rowHtml='<div class="connector-row">'+blockBtn(ksfId,item[0],true)+'<span class="vs" aria-hidden="true">＋</span>'+blockBtn(ksfId,item[1],true)+'</div>';
     }else{
-      var cols=columnsForBlock(ksfId,item);
-      if(cols.length){
-        var cnt=cols.length;
-        h+='<div class="branch-row">'+blockBtn(ksfId,item,false)
-          +'<span class="branch-line" aria-hidden="true"></span>'
-          +'<button class="column-tab" data-collist="'+ksfId+'" aria-label="コラム一覧を開く（'+cnt+'件）"><span class="ct-label">コラム</span><span class="ct-count"><span class="tcy">'+cnt+'</span>件</span></button>'
-          +'</div>';
-      }else{
-        h+=blockBtn(ksfId,item,false);
-      }
+      rowHtml=blockBtn(ksfId,item,false);
+    }
+    var isAnchor=k.colAnchor&&(isPair?item.indexOf(k.colAnchor)>=0:item===k.colAnchor);
+    if(isAnchor){
+      h+='<div class="branch-row">'+rowHtml
+        +'<span class="branch-line" aria-hidden="true"></span>'
+        +'<button class="column-tab" data-collist="'+ksfId+'" aria-label="コラム一覧を開く（'+colTotal+'件）"><span class="ct-label">コラム</span><span class="ct-count"><span class="tcy">'+colTotal+'</span>件</span></button>'
+        +'</div>';
+    }else{
+      h+=rowHtml;
     }
   });
   document.getElementById('ksf-canvas').innerHTML=h;
@@ -1911,12 +1943,16 @@ doneBtn.addEventListener('click',function(){backToKsf(true);});
 
 /* ================= COLUMNS ================= */
 function renderColList(ksfId){
-  var k=KSFS[ksfId];if(!k||!k.columns)return;
+  var k=KSFS[ksfId];if(!k)return;
+  var cols=k.columns||[];
   document.getElementById('collist-head').innerHTML='<span class="step-label">KSF</span>'
     +'<h1 class="page-title">コラム <span class="thin">（'+esc(k.name)+'）</span></h1>'
-    +'<p class="page-lead">読みたいコラムをタップしてください。</p>';
+    +(cols.length?'<p class="page-lead">読みたいコラムをタップしてください。</p>':'');
   var h='';
-  k.columns.forEach(function(c){
+  if(!cols.length){
+    h+='<div class="col-empty"><p class="ce-title">コラムはまだありません</p><p class="ce-note">この教材のコラムは準備中です。追加され次第、ここに表示されます。</p></div>';
+  }
+  cols.forEach(function(c){
     h+='<button class="col-item" data-col="'+esc(c.id)+'" aria-label="コラム「'+esc(c.title)+'」を開く"><span class="c-tap">読む ›</span><div class="c-kicker">コラム</div><div class="c-title">'+esc(c.title)+'</div></button>';
   });
   document.getElementById('collist-list').innerHTML=h;
