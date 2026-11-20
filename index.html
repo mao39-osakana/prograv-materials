@@ -1933,6 +1933,7 @@ function backToKsf(markDone){
   if(markDone&&curKsf&&curBlock){
     if(!state.done[curKsf])state.done[curKsf]={};
     state.done[curKsf][curBlock]=true;saveState();
+    if(window.PGTrack&&ksfComplete(curKsf)){PGTrack.send({site:'KSF',kind:'既読',itemId:curKsf,itemName:(KSFS[curKsf]?KSFS[curKsf].name:curKsf)});}
   }
   var target=curKsf;curBlock=null;
   if(target)backToKsfView(target);else backToHome();
@@ -2026,6 +2027,7 @@ function answerQuestion(i){
 function showResult(){
   var quiz=KSFS[curKsf].quiz;
   state.quiz[curKsf]=qCorrect;saveState();
+  if(window.PGTrack){PGTrack.send({site:'KSF',kind:'クイズ',itemId:curKsf,itemName:(KSFS[curKsf]?KSFS[curKsf].name:curKsf)+'（'+quiz.length+'問）',score:qCorrect});}
   qMain.style.display='none';qFeedback.className='q-feedback';qNextBtn.classList.remove('show');
   document.getElementById('q-score-num').textContent=qCorrect;
   document.getElementById('q-score-den').textContent=' ／ '+quiz.length+'問正解';
@@ -2058,6 +2060,24 @@ qNextBtn.addEventListener('click',function(){
   try{history.replaceState(withIdx(initial,0),'',hashForState(initial));}catch(e){}
   applyState(initial);
 })();
+})();
+</script>
+
+<script>
+/* PRO-GRAV 学習記録（LINEログイン連携） */
+(function(){
+  var API = 'https://prograv-learn.sprout-and.workers.dev';
+  try {
+    var lt = new URLSearchParams(location.hash.slice(1)).get('lt');
+    if (lt) { localStorage.setItem('prograv_lt', lt); history.replaceState(null, '', location.pathname + location.search); }
+  } catch(e){}
+  function pgToken(){ try { return localStorage.getItem('prograv_lt') || ''; } catch(e){ return ''; } }
+  window.PGTrack = {
+    send: function(ev){
+      var t = pgToken(); if (!t) return;
+      try { fetch(API + '/api/progress', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + t }, body: JSON.stringify(ev) }).catch(function(){}); } catch(e){}
+    }
+  };
 })();
 </script>
 </body>
