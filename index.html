@@ -2098,11 +2098,16 @@ qNextBtn.addEventListener('click',function(){
       + '</div>';
     document.body.appendChild(g);
   }
-  function badge(text){
-    var el = document.createElement('div');
-    el.style.cssText = 'position:fixed;right:10px;bottom:10px;z-index:9999;background:#101c31;color:#fff;font-size:11px;padding:7px 12px;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.25);opacity:.94';
-    el.textContent = text;
-    document.body.appendChild(el);
+  function showMemberName(r){
+    var label = (r.surname || (r.name || '').split(/[\s　]/)[0] || '');
+    if (!label) return;
+    var host = document.querySelector('.g-head-in');
+    if (!host || document.getElementById('pgMemberName')) return;
+    var el = document.createElement('span');
+    el.id = 'pgMemberName';
+    el.style.cssText = 'margin-left:auto;font-size:12px;color:var(--navy);border:1px solid #b9975b;border-radius:999px;padding:3px 10px;white-space:nowrap';
+    el.textContent = label + 'さん';
+    host.appendChild(el);
   }
   var t = pgToken();
   if (!t) { showGate('学習の記録のため、LINEログインをお願いしています'); return; }
@@ -2111,7 +2116,7 @@ qNextBtn.addEventListener('click',function(){
     .then(function(j){
       if (j && j.result) {
         document.documentElement.classList.remove('pg-locked');
-        badge('ログイン中：' + (j.result.name || '') + '（記録しています）');
+        showMemberName(j.result);
       } else {
         try { localStorage.removeItem('prograv_lt'); } catch(e){}
         showGate('ログインの有効期限が切れています。再度ログインをお願いします');
